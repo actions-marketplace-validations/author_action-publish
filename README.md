@@ -45,11 +45,11 @@ jobs:
     - uses: actions/checkout@v2
     - uses: author/action-publish@stable
       with:
-        # Optionally specify the directories to scan 
-        # for modules. If this is not specified, the 
+        # Optionally specify the directories to scan
+        # for modules. If this is not specified, the
         # root directory is scanned.
         scan: "./dist/browser, ./dist/node"
-        # Optionally force publishing as a public 
+        # Optionally force publishing as a public
         # module. We don't recommend setting this,
         # unless you have a very specific use case.
         force: true
@@ -81,7 +81,7 @@ There are several options to customize how the publisher handles operations.
     This supports glob syntax. Any `node_modules` directories are ignored automatically.
 
     A module is detected when a `package.json` file is recognized. Private packages will not be published.
-    
+
     ```yaml
     - uses: author/action-publish@stable
       with:
@@ -115,6 +115,44 @@ There are several options to customize how the publisher handles operations.
         REGISTRY_TOKEN: "${{ secrets.NPM_TOKEN }}"
     ```
 
+1. `dist_tag`
+
+    Set a [npm dist-tag](https://docs.npmjs.com/cli/v6/commands/npm-dist-tag) by configuring this attribute. This tag will be applied to all _non-prerelease_ versions (i.e. `x.x.x`, not `x.x.x-prerelease`).
+
+    This allows users to install your module via tag name. For example `npm install mymodule@current`.
+
+    To apply multiple tags, separate with commas.
+
+    ```yaml
+    - uses: author/action-publish@stable
+      with:
+        dist_tag: latest, current
+      env:
+        REGISTRY_TOKEN: "${{ secrets.NPM_TOKEN }}"
+    ```
+
+    **Notice:** npm automatically creates a `latest` tag on every publish (this attribute can override it).
+
+1. `prerelease_dist_tag`
+
+    Set a [npm dist-tag](https://docs.npmjs.com/cli/v6/commands/npm-dist-tag) for a prerelease version by configuring this attribute. This tag will be applied to all _prerelease_ versions (i.e. `x.x.x-prerelease`, not `x.x.x`).
+
+    This allows users to install your module via tag name. For example `npm install mymodule@next`.
+
+    To apply multiple tags, separate with commas.
+
+    ```yaml
+    - uses: author/action-publish@stable
+      with:
+        prerelease_dist_tag: next, beta, canary
+      env:
+        REGISTRY_TOKEN: "${{ secrets.NPM_TOKEN }}"
+    ```
+
+    This differs from `dist_tag` because it only applies to pre-releases.
+
+    A common approach is to set a dist-tag for prereleases so users will not automatically install a pre-release version when they want the latest stable version. In other words, running `npm install mymodule` (which is the equivalent of `npm install mymodule@latest`) should install the latest stable version while `npm install mymodule@canary` would install the latest prerelease/bleeding edge version.
+
 ## Developer Notes
 
 This action is best used as part of a complete deployment process. Consider the following workflow:
@@ -133,18 +171,18 @@ jobs:
     steps:
       # Checkout your updatd source code
     - uses: actions/checkout@v2
-    
+
       # If the version has changed, create a new git tag for it.
     - name: Tag
       id: autotagger
       uses: butlerlogic/action-autotag@stable
       with:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-    
+
       # The remaining steps all depend on whether or  not
-      # a new tag was created. There is no need to release/publish 
+      # a new tag was created. There is no need to release/publish
       # updates until the code base is in a releaseable state.
-    
+
       # Create a github release
       # This will create a snapshot of the module,
       # available in the "Releases" section on Github.
@@ -189,7 +227,7 @@ We like to archive each module in our releases, making it easier for developers 
           cd ./build && npm install && cd ../
           npm run build --if-present
           for d in .dist/*/*/ ; do tar -cvzf ${d%%/}-x.x.x.tar.gz ${d%%}*; done;
-    
+
     - name: Upload Release Artifacts
       # This is not one of our actions
       uses: AButler/upload-release-assets@v2.0

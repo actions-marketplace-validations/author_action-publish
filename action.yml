@@ -15,6 +15,12 @@ inputs:
   force:
     description: Optional. Force a private module to be published (see limitations in README)
     required: false
+  dist_tag:
+    description: Optional. The dist-tag to apply to non-prerelease modules. examples - latest, stable, current
+    required: false
+  prerelease_dist_tag:
+    description: Optional. The name of a dist-tag to use if the module is a prerelease. examples - beta, next, dev, canary
+    required: false
 outputs:
   modules:
     description: "A comma-delimited list of modules that were updated. Ex: '@myorg/mypkg@1.0.0, @myorg/myotherpkg@1.4.1'"
