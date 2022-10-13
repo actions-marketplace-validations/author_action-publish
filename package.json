@@ -4,6 +4,7 @@
   "private": true,
   "description": "Automatically publish JavaScript modules to a registry (like the npm registry). The code base is scanned for JavaScript modules, each of which is published to the specified registry (default is npm). Respects .npmrc files if present in the module's root directory.",
   "main": "lib/main.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/author/action-publish.git"
