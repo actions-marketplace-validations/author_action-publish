@@ -1,6 +1,6 @@
 # author/action-publish
 
-This action will scan a code base and publish any public JavaScript modules it detects. It **supports publishing one _or more_ modules**, custom npm registries, and custom `.npmrc` files.
+This action will scan a code base and publish any public JavaScript modules it detects. It **supports publishing one _or more_ modules**, custom npm registries, npm dist-tags, and custom `.npmrc` files.
 
 Modules are detected by the presence of a `package.json` file. Private packages will not be published (unless forced) and `.npmrc` files will be respected if they exist within the module's root directory.
 
